@@ -16,7 +16,7 @@ class BloomFilterSimplest
   def add(key)
     hashes(key).each do |hash|
       # set bit at position hash % SIZE
-      @state |= 1 << (hash % SIZE)
+      @state |= 1 << (hash % (SIZE - 1))
     end
 
     self
@@ -24,7 +24,7 @@ class BloomFilterSimplest
 
   def member?(key)
     hashes(key).all? do |hash|
-      @state[hash % SIZE] == 1
+      @state[hash % (SIZE - 1)] == 1
     end
   end
 

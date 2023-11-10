@@ -24,7 +24,7 @@ class Bloomfilter
 
   def add(key)
     hashes(key).each do |hash|
-      @state[hash % @size] = 1
+      @state[hash % (@size - 1)] = 1
     end
 
     self
@@ -32,7 +32,7 @@ class Bloomfilter
 
   def member?(key)
     hashes(key).all? do |hash|
-      @state[hash % @size] == 1
+      @state[hash % (@size - 1)] == 1
     end
   end
 
