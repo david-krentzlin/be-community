@@ -7,10 +7,8 @@ require 'securerandom'
 # Most simple bloom filter implementation to show the basic idea.
 class BloomFilterSimplest
   SIZE = 2**8 # real implementations use way bigger states
-  SEEDS = 5   # real implementations use more seeds and calculate them dynamically
 
   def initialize
-    @seeds = SEEDS.times.map { SecureRandom.hex }
     # we'll (ab)use bignum to store the state of the filter
     @state = 0
   end
@@ -20,6 +18,7 @@ class BloomFilterSimplest
       # set bit at position hash % SIZE
       @state |= 1 << (hash % SIZE)
     end
+
     self
   end
 
@@ -30,12 +29,10 @@ class BloomFilterSimplest
   end
 
   def hashes(key)
-    @seeds.flat_map do |seed|
-      [
-        MurmurHash3::PureRuby32.murmur3_32_str_hash("#{key}_#{seed}"),
-        FNV.new.fnv1a_32("#{key}_#{seed}")
-      ]
-    end
+    [
+      MurmurHash3::PureRuby32.murmur3_32_str_hash(key.to_s),
+      Fnv::Hash.fnv_1a(key, size: 32)
+    ]
   end
 
   def saturation
