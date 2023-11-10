@@ -24,7 +24,6 @@ class Bloomfilter
 
   def add(key)
     hashes(key).each do |hash|
-      # set bit at position hash % SIZE
       @state[hash % @size] = 1
     end
 
@@ -37,10 +36,6 @@ class Bloomfilter
     end
   end
 
-  def to_s
-    @state.to_s
-  end
-
   def saturation
     @state.total_set  / @size.to_f
   end
@@ -51,17 +46,33 @@ class Bloomfilter
     end
   end
 
+  # The size of the filter is m = -n ln(p) / (ln(2))^2.
+  # see: https://hur.st/bloomfilter/?n=10000&p=1.0E-7&m=&k=
   def calculate_size(expected_elements, false_positive_rate)
-    # see: https://hur.st/bloomfilter/?n=10000&p=1.0E-7&m=&k=
     -((expected_elements * Math.log(false_positive_rate) / Math.log(2) ** 2)).ceil
   end
 
+  # The optimal number of hash functions is k = m/n ln(2).
+  # see: https://hur.st/bloomfilter/?n=10000&p=1.0E-7&m=&k=
   def calculate_hash_rounds(size, expected_elements)
-    # see: https://hur.st/bloomfilter/?n=10000&p=1.0E-7&m=&k=
     (size / expected_elements * Math.log(2)).ceil
   end
 
+  # calculate seeds to "create" more hash functions
   def calculate_seeds(hash_rounds)
     (hash_rounds / HASH_FUNCTIONS.size).times.map { SecureRandom.hex }
   end
+
+  def bytesize
+    @state.size / 8
+  end
+
+  def to_s
+    @state.to_s
+  end
+
+  def inspect
+    "#<#{self.class.name}:#{object_id} state_size=#{size} hash_rounds=#{hash_rounds} saturation=#{saturation} bytesize=#{bytesize}>"
+  end
+
 end
