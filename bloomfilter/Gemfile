@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'fnv-hash', '~> 0.2.0'
+gem 'murmurhash3', '~> 0.1.7'
+gem 'bitarray', '~> 1.0'

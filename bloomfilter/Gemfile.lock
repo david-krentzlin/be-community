@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bitarray (1.3.0)
+    fnv-hash (0.2.0)
+    murmurhash3 (0.1.7)
+
+PLATFORMS
+  arm64-darwin-22
+
+DEPENDENCIES
+  bitarray (~> 1.0)
+  fnv-hash (~> 0.2.0)
+  murmurhash3 (~> 0.1.7)
+
+BUNDLED WITH
+   2.4.9
